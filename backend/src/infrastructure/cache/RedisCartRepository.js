@@ -7,10 +7,12 @@ const CART_TTL = 60 * 60 * 24 * 7; // 7 días en segundos
 class RedisCartRepository extends CartRepository {
   constructor() {
     super();
-    this.client = new Redis({
-      host: process.env.REDIS_HOST || 'localhost',
-      port: process.env.REDIS_PORT || 6379,
-    });
+    this.client = process.env.REDIS_URL
+      ? new Redis(process.env.REDIS_URL)
+      : new Redis({
+          host: process.env.REDIS_HOST || 'localhost',
+          port: process.env.REDIS_PORT || 6379,
+        });
 
     this.client.on('connect', () => console.log('Redis connected'));
     this.client.on('error',   (err) => console.error('Redis error:', err));
