@@ -101,7 +101,7 @@ async function seed() {
     const { rows: [sa] } = await txClient.query(
       `INSERT INTO users (id, name, email, password_hash, role)
        VALUES ($1,$2,$3,$4,'superadmin') RETURNING id`,
-      [uuidv4(), 'Super Admin', 'superadmin@orderflow.com', passwordHash]
+      [uuidv4(), 'Super Admin', 'daniel@test.com', passwordHash]
     );
     userIds.push(sa.id);
 
