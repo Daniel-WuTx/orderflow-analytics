@@ -7,7 +7,7 @@ const {
   getProductTrend,
   getRFMSegmentation
 } = require('../controllers/analytics.controller');
-const { verifyToken, requireAdmin } = require('../middlewares/auth.middleware');
+const { verifyToken, requireAdmin } = require('../infrastructure/http/middlewares/auth.middleware');
 
 router.use(verifyToken, requireAdmin);
 

@@ -1,4 +1,4 @@
-const pool = require('../config/db');
+const pool = require('../infrastructure/db/pool');
 
 // 1. Resumen general del negocio
 const getSummary = async (req, res) => {

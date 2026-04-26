@@ -1,4 +1,4 @@
-const pool = require('../config/db');
+const pool = require('../infrastructure/db/pool');
 
 // POST /api/orders  — crea una orden completa desde el carrito
 const create = async (req, res) => {

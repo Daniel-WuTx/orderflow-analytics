@@ -4,18 +4,18 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(
-    () => JSON.parse(localStorage.getItem('user')) || null
+    () => JSON.parse(sessionStorage.getItem('user')) || null
   );
 
   const login = (userData, token) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
+    sessionStorage.setItem('token', token);
+    sessionStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
     setUser(null);
   };
 

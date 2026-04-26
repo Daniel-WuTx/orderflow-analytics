@@ -1,4 +1,4 @@
-const pool = require('../config/db');
+const pool = require('../infrastructure/db/pool');
 
 // GET /api/products
 const getAll = async (req, res) => {
@@ -6,6 +6,8 @@ const getAll = async (req, res) => {
   const offset = (page - 1) * limit;
   const params = [];
   const conditions = [];
+  const path = require('path');
+  const fs = require('fs');
 
   if (category) {
     params.push(category);
@@ -117,4 +119,72 @@ const remove = async (req, res) => {
   }
 };
 
-module.exports = { getAll, getOne, create, update, remove };
+// GET /api/categories
+const getCategories = async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT * FROM categories ORDER BY name');
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener categorías' });
+  }
+};
+
+// GET /api/products/:id/image
+const getImages = async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      `SELECT * FROM product_images
+       WHERE product_id = $1 ORDER BY position`,
+      [req.params.id]
+    );
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener imágenes' });
+  }
+};
+
+// POST /api/products/:id/images
+const addImage = async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No se recibió imagen' });
+  try {
+    const { rows: current } = await pool.query(
+      'SELECT COUNT(*) FROM product_images WHERE product_id = $1',
+      [req.params.id]
+    );
+    if (parseInt(current[0].count) >= 6)
+      return res.status(400).json({ error: 'Máximo 6 imágenes por producto' });
+
+    const url = `/uploads/${req.file.filename}`;
+    const position = parseInt(current[0].count);
+
+    const { rows } = await pool.query(
+      `INSERT INTO product_images (product_id, url, position)
+       VALUES ($1, $2, $3) RETURNING *`,
+      [req.params.id, url, position]
+    );
+    res.status(201).json(rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al guardar imagen' });
+  }
+};
+
+// DELETE /api/products/:id/images/:imageId
+const deleteImage = async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      'DELETE FROM product_images WHERE id = $1 AND product_id = $2 RETURNING *',
+      [req.params.imageId, req.params.id]
+    );
+    if (!rows[0]) return res.status(404).json({ error: 'Imagen no encontrada' });
+
+    // Borra el archivo físico
+    const filePath = path.join(__dirname, '../uploads', path.basename(rows[0].url));
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+
+    res.json({ message: 'Imagen eliminada' });
+  } catch (err) {
+    res.status(500).json({ error: 'Error al eliminar imagen' });
+  }
+};
+
+module.exports = { getAll, getOne, create, update, remove, getCategories, getImages, addImage, deleteImage };
