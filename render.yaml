@@ -1,0 +1,58 @@
+services:
+  - type: web
+    name: nexora-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node src/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DB_HOST
+        fromDatabase:
+          name: nexora-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: nexora-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: nexora-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: nexora-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: nexora-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: REDIS_HOST
+        fromService:
+          name: nexora-redis
+          type: redis
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          name: nexora-redis
+          type: redis
+          property: port
+      - key: WOMPI_PUBLIC_KEY
+        sync: false
+      - key: WOMPI_PRIVATE_KEY
+        sync: false
+      - key: WOMPI_BASE_URL
+        value: https://sandbox.wompi.co/v1
+      - key: PAYMENT_REDIRECT_URL
+        sync: false
+
+databases:
+  - name: nexora-db
+    databaseName: orderflow_db
+    user: postgres
+    plan: free
