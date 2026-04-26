@@ -182,7 +182,7 @@ export default function Dashboard() {
       <div style={{ background:'#fff', borderBottom:'1px solid #F0F0F0', padding:'1.25rem 2rem' }}>
         <SkeletonBlock h={20} w={200}/>
       </div>
-      <div style={{ padding:'1.5rem 2rem', maxWidth:1100, margin:'0 auto' }}>
+      <div style={{ padding:'1.5rem 4rem', maxWidth:1400, margin:'0 auto' }}>
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))', gap:14, marginBottom:20 }}>
           {[1,2,3,4,5,6].map(i => <div key={i} style={{ background:'#fff', border:'1px solid #F0F0F0', borderRadius:12, padding:'1.1rem', height:110 }}><SkeletonBlock/><SkeletonBlock w="60%"/></div>)}
         </div>
@@ -250,7 +250,7 @@ export default function Dashboard() {
         ))}
       </div>
 
-      <div style={{ padding:'1.5rem 2rem', maxWidth:1100, margin:'0 auto' }}>
+      <div style={{ padding:'1.5rem 4rem', maxWidth:1400, margin:'0 auto' }}>
 
         {/* ══ TAB: RESUMEN ══════════════════════════════ */}
         {activeTab === 'overview' && (
